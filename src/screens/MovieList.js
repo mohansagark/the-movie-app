@@ -7,6 +7,7 @@ import {
   TouchableOpacity, 
   Image,
   Dimensions,
+  FlatList
  } from 'react-native';
 
 class MovieList extends Component {
@@ -20,8 +21,21 @@ class MovieList extends Component {
           {'id':2, 'name':'Lucy', 'rating': 4.3, 'Favourite': 'N'},
           {'id':3, 'name':'The Godfather', 'rating': 4.2, 'Favourite': 'Y'},
           {'id':4, 'name':'12 Angry Men', 'rating': 4, 'Favourite': 'Y'},
-      ]
+      ],
+      isFavourite: []
     };
+  }
+
+  componentDidMount=()=>{
+    this.setState({isFavourite:Array(this.state.tableData.length).fill(false)})
+  }
+
+  handleFavourite = (i)=> {
+    var temp=this.state.isFavourite.slice()
+    temp[i-1]=!this.state.isFavourite[i-1]
+     this.setState({
+     isFavourite:temp
+     })
   }
 
   render() {
@@ -44,14 +58,48 @@ class MovieList extends Component {
             </View>
         )
     }
-
+    const Item = (props) => {
+      return(
+        <View style={styles.tableItem}>
+          <Text>
+            {props.children}
+          </Text>
+        </View>
+      )
+    }
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.tableHeader}>
           {tableHeadItems}
         </View>
         <View style={styles.tableBody}>
-          <Text>test</Text>
+          <FlatList 
+            data={this.state.tableData}
+            key={this.state.tableData.id}
+            renderItem = {({item,index})=>(
+              <View key={index} style={styles.tableItem}>
+                <Item>{index + 1}</Item>
+                <Item>{item.name}</Item>
+                <Item>{item.rating}</Item>
+                <TouchableOpacity 
+                  key={index} 
+                  onPress={()=>this.handleFavourite(index[0])}
+                >
+                <Item key={index}>
+                  {this.state.isFavourite[index[0]-1]?
+                  <Image 
+                    source={require('../assets/fav_on.png')} 
+                    style={{resizeMode: 'center', height: 50}}
+                  /> :
+                  <Image 
+                    source={require('../assets/fav_off.png')} 
+                    style={{resizeMode: 'center', height: 50}}
+                /> }
+                </Item>
+                </TouchableOpacity>
+              </View>
+            )}
+          />
         </View>
       </SafeAreaView>
     );
@@ -92,11 +140,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 15,
     color: 'white',
-    marginRight: '5%'
+    marginRight: '5%',
   },
-  // tableBody:{
-  //   width: 0.9 * SW,
-  //   borderWidth: 2,
-  //   borderColor: 'black',
-  // }
+  tableBody:{
+    width: 0.9 * SW,
+    borderWidth: 2,
+    borderColor: 'black',
+  },
+  tableItem:{
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderColor: 'black',
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems:'center',
+    height: SH/20,
+  }
 })

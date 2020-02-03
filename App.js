@@ -9,11 +9,13 @@
 import React from 'react';
 import LoginPage, {} from './src/screens/LoginPage'
 import MovieList from './src/screens/MovieList';
+import AccordianPage from './src/screens/AccordianPage';
 
 const App = () => {
   return (
     // <LoginPage />
-    <MovieList />
+    // <MovieList />
+    <AccordianPage />
   );
 };
 
